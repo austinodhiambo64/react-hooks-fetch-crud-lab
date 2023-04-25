@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import QuestionItem from "./QuestionItem";
+import QuestionForm from "./QuestionForm";
 
 function QuestionList() {
   const [questions, setQuestions] = useState([]);
@@ -40,6 +41,21 @@ function QuestionList() {
       });
   }
 
+  function handleAddQuestion(question) {
+    fetch("http://localhost:4000/questions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(question),
+    })
+      .then((r) => r.json())
+      .then((newQuestion) => {
+        const updatedQuestions = [...questions, newQuestion];
+        setQuestions(updatedQuestions);
+      });
+  }
+
   const questionItems = questions.map((q) => (
     <QuestionItem
       key={q.id}
@@ -53,6 +69,7 @@ function QuestionList() {
     <section>
       <h1>Quiz Questions</h1>
       <ul>{questionItems}</ul>
+      <QuestionForm onAddQuestion={handleAddQuestion} />
     </section>
   );
 }
